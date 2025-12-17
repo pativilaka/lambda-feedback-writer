@@ -36,5 +36,5 @@ public class FeedbackDTO {
                 ", nota=" + nota +
                 '}';
     }
-    
+
 }

@@ -1,0 +1,7 @@
+{
+  "records": [
+    {
+      "body": "{ \"Type\": \"Notification\", \"Message\": \"{ \\\"descricao\\\": \\\"Teste local\\\", \\\"nota\\\": 10 }\", \"Timestamp\": \"2025-12-13T22:12:00Z\" }"
+    }
+  ]
+}
