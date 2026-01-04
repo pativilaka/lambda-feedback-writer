@@ -20,7 +20,21 @@ public class FeedbackRepository {
     @Inject
     private final DynamoDbTable<FeedbackEntity> table;
 
-    private static final String TABLE_NAME = "feedback";
+    public FeedbackRepository(String tableName) {
+        DynamoDbClient dynamoDbClient = DynamoDbClient.builder()
+                .region(Region.US_EAST_2) // Ohio
+                .build();
+
+        DynamoDbEnhancedClient enhancedClient =
+                DynamoDbEnhancedClient.builder()
+                        .dynamoDbClient(dynamoDbClient)
+                        .build();
+
+        this.table = enhancedClient.table(
+                tableName,
+                TableSchema.fromBean(FeedbackEntity.class)
+        );
+    }
 
     public FeedbackRepository() {
         DynamoDbClient dynamoDbClient = DynamoDbClient.builder().build();

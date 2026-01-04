@@ -35,17 +35,21 @@ public class FeedbackWriterHandler implements RequestHandler<SQSEvent, Void> {
     @Override
     public Void handleRequest(SQSEvent event, Context context) {
 
+        if (event == null || event.getRecords() == null || event.getRecords().isEmpty()) {
+            System.out.println("Nenhum registro recebido no evento SQS.");
+            return null;
+        }
+
         event.getRecords().forEach(sqsMessage -> {
             try {
                 String body = sqsMessage.getBody();
 
                 JsonNode snsEnvelope = objectMapper.readTree(body);
-
+                String snsTimestamp = snsEnvelope.get("Timestamp").asText();
                 String feedbackJson = snsEnvelope.get("Message").asText();
 
-                FeedbackDTO feedback = objectMapper.readValue(feedbackJson, FeedbackDTO.class);
-
-                String snsTimestamp = snsEnvelope.get("Timestamp").asText();
+                JsonNode snsMessage = objectMapper.readTree(feedbackJson);
+                FeedbackDTO feedback = objectMapper.treeToValue(snsMessage, FeedbackDTO.class);
 
                 LOG.infof("Feedback recebido: descricao='%s', nota=%d", feedback.getDescricao(), feedback.getNota());
                 LOG.info("Timestamp SNS: " + snsTimestamp);
