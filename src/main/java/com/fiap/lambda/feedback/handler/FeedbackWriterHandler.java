@@ -10,6 +10,9 @@ import com.fiap.lambda.feedback.model.FeedbackEntity;
 import com.fiap.lambda.feedback.repository.FeedbackRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -71,11 +74,19 @@ public class FeedbackWriterHandler implements RequestHandler<SQSEvent, Void> {
     }
 
     private FeedbackEntity toEntity(FeedbackDTO dto, String timestampSns) {
+        Instant instant = Instant.parse(timestampSns);
         FeedbackEntity entity = new FeedbackEntity();
         entity.setId(dto.getId());
         entity.setDescricao(dto.getDescricao());
         entity.setNota(dto.getNota());
-        entity.setTimestamp(timestampSns);
+        entity.setCreatedAt(instant.getEpochSecond());
+        String date = instant
+                .atZone(ZoneOffset.UTC)
+                .toLocalDate()
+                .toString();
+
+        entity.setDate(date);
+
         return entity;
     }
 }

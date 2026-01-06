@@ -1,8 +1,9 @@
 package com.fiap.lambda.feedback.model;
 
-
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey;
 
 @DynamoDbBean
 public class FeedbackEntity {
@@ -10,7 +11,8 @@ public class FeedbackEntity {
     private String id;
     private String descricao;
     private Integer nota;
-    private String timestamp;
+    private String date;
+    private Long createdAt;
 
     @DynamoDbPartitionKey
     public String getId() {
@@ -37,12 +39,22 @@ public class FeedbackEntity {
         this.nota = nota;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    @DynamoDbSecondaryPartitionKey(indexNames = "gsi_date_createdAt")
+    public String getDate() {
+        return date;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    @DynamoDbSecondarySortKey(indexNames = "gsi_date_createdAt")
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
     }
 
 }
